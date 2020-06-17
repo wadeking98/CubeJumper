@@ -1,0 +1,8 @@
+<div class="obstacle" 
+    [style.height]="height.toString()+'vh'" 
+    [style.width]="width.toString()+'vh'" 
+    [style.top]="(90-height).toString()+'vh'"
+    [(style.left)]="pos"
+    [@move]="state"
+    (@move.done)="doneHandler($event)"
+></div>

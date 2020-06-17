@@ -1,0 +1,6 @@
+.obstacle{
+    position: absolute;
+    background-color: coral;
+    border-radius: 1vh;
+    left:60vh;
+}

@@ -1,0 +1,7 @@
+<h1 class="title">Cube Jumper</h1>
+<ul>
+    <li *ngFor="let item of keys(menuItems)">
+        <button type="button" [routerLink]="menuItems[item]['link']" class="btn {{menuItems[item]['type']}}" (click)="menuItems[item]['func']()">{{item}}</button>
+    </li>
+</ul>
+
