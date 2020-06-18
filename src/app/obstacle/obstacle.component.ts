@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import {
   trigger,
   state,
@@ -12,62 +12,52 @@ import {
   templateUrl: './obstacle.component.html',
   styleUrls: ['./obstacle.component.css'],
   
-  animations:[
-    trigger('move', [
-      state('void',style({
-        left:`${window.innerWidth}px`
-      })),
-      state('done',style({
-        left:"-10vh"
-      })),
-      transition('void => done', [
-        animate('1s')
-      ]),
-      transition('done => void', [
-        animate('0s')
-      ])
-    ])
-  ]
 })
 export class ObstacleComponent implements OnInit {
+  @Input() fps:number;
   heighthigh = 45;
-  heightlow = 5;
-  widthhigh=15;
+  heightlow = 10;
+  widthhigh=25;
   widthlow=5;
-  height = 0;
-  width = 0;
-  pos:string = '0px';
-  state = 'done';
+  width = this.genWidth();
+  height = this.genHeight();
+  posinit = this.pxToVh(window.innerWidth);
+  pos= this.posinit;
+  timer = 0;
+  vel = -100;
+  colourList = ["indigo","palevioletred","pink","maroon","coral","darksalmon","darkolivegreen","teal","cyan"]
+  colour = this.colourList[Math.round(Math.random()*(this.colourList.length-1))]
+  @Output() framePos = new EventEmitter<Object>();
   constructor() { }
 
   ngOnInit(): void {
+    setInterval(()=>{this.update()},Math.round((1/this.fps)*1000))
   }
 
-  doneHandler($event){
-    if($event.fromState === 'void'){
-      this.moveDone();
-    }else if($event.fromState === 'done'){
-      this.resetDone();
+  update():void{
+    this.timer += 1/this.fps
+    this.pos = this.posinit + this.vel*this.timer
+    this.framePos.emit({"pos":this.pos, "width":this.width, "height":this.height});
+    if(this.pos <= -this.widthhigh){
+      this.timer = 0;
+      this.width = this.genWidth();
+      this.height = this.genHeight();
+      this.colour = this.colourList[Math.round(Math.random()*(this.colourList.length-1))]
     }
   }
 
   genHeight(){
-    this.height = Math.random()*(this.heighthigh-this.heightlow)+this.heightlow
+    return Math.random()*(this.heighthigh-this.heightlow)+this.heightlow
   }
 
   genWidth(){
-    this.width = Math.random()*(this.widthhigh-this.widthlow)+this.widthlow
+    return Math.random()*(this.widthhigh-this.widthlow)+this.widthlow
   }
 
-  moveDone(){
-    this.state='void'
+  pxToVh(val:number):number{
+    return (val*100/window.innerHeight);
   }
-
-  resetDone(){
-    this.genHeight();
-    this.genWidth();
-    this.state='done'
-  }
+  
 
   onWindowResize($event){
     

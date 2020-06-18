@@ -12,7 +12,7 @@ export class MainMenuComponent implements OnInit {
 
   menuItems = {
     "Play":{"func":()=>{}, "type":"btn-primary", "link":"/game"},
-    "About":{"func":()=>{}, "type":"btn-secondary", "link":"/#"}
+    "About":{"func":()=>{window.location.href="https://github.com/wadeking98/CubeJumper"}, "type":"btn-secondary", "link":"/#"}
     
   }
 

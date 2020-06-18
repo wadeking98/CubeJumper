@@ -1,0 +1,23 @@
+ul{
+    margin-top: 35vh;
+}
+li{
+    position: relative;
+    list-style: none;
+    margin: 2vh;
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+}
+.btn{
+    width: 50%;
+    height: 7vh;
+}
+.title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10vh;
+    font-size: 15vh;
+}

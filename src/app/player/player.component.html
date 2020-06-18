@@ -1,1 +1,7 @@
-<div class="player" [@jump]="setState(jump)" (@jump.done)="fall()"></div>
+<div class="player" 
+    [style.top]="(80-pos).toString()+'vh'" 
+    [style.width]="width.toString()+'vh'" 
+    [style.height]="height.toString()+'vh'"
+    [style.left]="left.toString()+'vh'"
+    [style.backgroundColor]="colour"
+></div>

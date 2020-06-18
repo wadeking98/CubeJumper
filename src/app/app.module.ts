@@ -10,6 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { GameWindowComponent } from './game-window/game-window.component';
 import { PlayerComponent } from './player/player.component';
 import { ObstacleComponent } from './obstacle/obstacle.component';
+import { GameOverWindowComponent } from './game-over-window/game-over-window.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ObstacleComponent } from './obstacle/obstacle.component';
     GameWindowComponent,
     PlayerComponent,
     ObstacleComponent,
+    GameOverWindowComponent,
   ],
   imports: [
     BrowserModule,

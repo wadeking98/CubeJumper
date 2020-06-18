@@ -1,4 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import {Router} from '@angular/router'
 
 
 @Component({
@@ -9,11 +10,10 @@ import { Component, OnInit, HostListener } from '@angular/core';
 })
 export class GameWindowComponent implements OnInit {
   
-  jumpVel = 5;
+  objPos:object;
+  playerPos:object;
   jump = false;
-  constructor() { }
-  state = 'ground';
-  obst = 'done';
+  constructor(private router:Router) { }
 
   ngOnInit(): void {
   }
@@ -22,28 +22,50 @@ export class GameWindowComponent implements OnInit {
   keyEvent(event:KeyboardEvent){
     //listen for space bar
     if(event.keyCode===32){
-      if(this.state==='ground'){
-        this.jump = true;
-      }
+      this.jump = true;
     }
   }
 
-  //reset jump after the animation
-  onDone(state:string){
-    this.state = state;
-    if(state==='peak'){
-      this.jump = false;
+  detectCollision(){
+    //console.log(this.objPos["pos"])
+    //console.log(this.playerPos["left"])
+    let pxi = this.playerPos["left"];
+    let pxf = pxi+this.playerPos["width"];
+    let oxi = this.objPos["pos"];
+    let oxf = oxi+this.objPos["width"];
+
+    let pyi = this.playerPos["pos"];
+    let pyf = pyi+this.playerPos["height"];
+    let oyi = 0;
+    let oyf = oyi+this.objPos["height"];
+    if(this.intersect(pxi,pxf,oxi,oxf) && this.intersect(pyi,pyf,oyi,oyf)){
+      this.router.navigateByUrl("/game-over");
     }
+    
   }
 
-  onAnimDone(){
-    this.obst = 'void'
+  intersect(n:number, m:number, a:number, b:number){
+    return this.between(n,a,b) || this.between(m, a,b) || this.between(a,n,m) || this.between(b,n,m);
   }
 
-  test(){
-    alert("test");
+  between(n:number, a:number, b:number){
+    return (n-a)*(n-b)<=0
   }
 
+  getObjPos($event){
+    this.objPos = $event;
+    this.detectCollision()
+  }
+
+  getPlayerPos($event){
+    this.playerPos = $event;
+  }
+
+  resetJump(){
+    this.jump = false;
+  }
+
+  
   
 
 }
