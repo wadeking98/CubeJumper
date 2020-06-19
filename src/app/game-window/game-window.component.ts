@@ -13,6 +13,16 @@ export class GameWindowComponent implements OnInit {
   objPos:object;
   playerPos:object;
   jump = false;
+  pulse = false
+  dbjump = false;
+  score = 0;
+  powerups = {
+    0:{"name":"pulse","image":"pulse.ico","max":1},
+    5:{"name":"db jump", "image":"dbjump.ico","max":2}
+  };
+  powerupRepeat = 10;
+  playerPowerups = {};
+
   constructor(private router:Router) { }
 
   ngOnInit(): void {
@@ -22,7 +32,13 @@ export class GameWindowComponent implements OnInit {
   keyEvent(event:KeyboardEvent){
     //listen for space bar
     if(event.keyCode===32){
+      if(this.jump){//dbjump
+        this.dbjump = true;
+      }
       this.jump = true;
+    }else if(event.keyCode===90){//listen for 'z' key
+      this.pulse = true;
+      console.log("pulse");
     }
   }
 
@@ -38,7 +54,7 @@ export class GameWindowComponent implements OnInit {
     let pyf = pyi+this.playerPos["height"];
     let oyi = 0;
     let oyf = oyi+this.objPos["height"];
-    if(this.intersect(pxi,pxf,oxi,oxf) && this.intersect(pyi,pyf,oyi,oyf)){
+    if(this.intersect(pxi,pxf,oxi,oxf) && this.intersect(pyi,pyf,oyi,oyf) && !this.pulse){
       this.router.navigateByUrl("/game-over");
     }
     
@@ -55,6 +71,34 @@ export class GameWindowComponent implements OnInit {
   getObjPos($event){
     this.objPos = $event;
     this.detectCollision()
+    
+    if(this.score != $event["score"]){
+      this.score = $event["score"]
+      this.onScoreUpdate()
+    }
+  }
+
+  powerupKeys(obj:any){
+    return this.keys(obj).filter((item)=>obj[item]['uses']>0);
+  }
+
+  keys(obj:any): string[]{
+    return Object.keys(obj)
+  }
+
+  onScoreUpdate(){
+    if(this.score%this.powerupRepeat in this.powerups && this.score){
+      let pwrupName = this.powerups[this.score%this.powerupRepeat]["name"]
+      let pwrupImg = this.powerups[this.score%this.powerupRepeat]["image"]
+      let max = this.powerups[this.score%this.powerupRepeat]["max"]
+      //increment powerup if player already has it
+      if(pwrupName in this.playerPowerups && this.playerPowerups[pwrupName]["uses"] < max){
+        this.playerPowerups[pwrupName]["uses"]++;
+      }else{//add powerup if not exist
+        this.playerPowerups[pwrupName] = {"uses":1, "image":pwrupImg};
+      }
+    }
+    
   }
 
   getPlayerPos($event){
@@ -63,6 +107,11 @@ export class GameWindowComponent implements OnInit {
 
   resetJump(){
     this.jump = false;
+    this.dbjump = false;
+  }
+
+  resetPulse(){
+    this.pulse = false;
   }
 
   

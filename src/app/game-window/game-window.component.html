@@ -1,2 +1,21 @@
-<app-player fps="120" [(jump)]="jump" (jumpDone)="resetJump()" (framePos)="getPlayerPos($event)"></app-player>
+<div class="score">
+    <p>{{score}}</p>
+</div>
+<ul class="powerup-list">
+    <li *ngFor="let item of powerupKeys(playerPowerups)">
+        <div  class="powerup" [id]="item">
+            <img [src]="'assets/'+playerPowerups[item]['image']" alt=""><p>{{playerPowerups[item]['uses']}}</p>
+        </div>
+    </li>
+</ul>
+<app-player fps="120" 
+    [(jump)]="jump" 
+    [(dbjump)]="dbjump" 
+    [(pulse)]="pulse" 
+    [(playerPowerups)]="playerPowerups" 
+    (jumpDone)="resetJump()" 
+    (framePos)="getPlayerPos($event)"
+    (pulseDone)="resetPulse()"
+    ></app-player>
 <app-obstacle fps="120" (framePos)="getObjPos($event)"></app-obstacle>
+
