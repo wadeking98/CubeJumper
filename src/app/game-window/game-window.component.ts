@@ -13,14 +13,23 @@ export class GameWindowComponent implements OnInit {
   objPos:object;
   playerPos:object;
   jump = false;
-  pulse = false
+  pulse = false;
   dbjump = false;
+  damage = false;
   score = 0;
   powerups = {
-    0:{"name":"pulse","image":"pulse.ico","max":1},
-    5:{"name":"db jump", "image":"dbjump.ico","max":2}
+    5:[{"name":"db jump", "image":"dbjump.ico","max":2}],
+    10:[
+        {"name":"pulse","image":"pulse.ico","max":1},
+        {"name":"db jump", "image":"dbjump.ico","max":2},
+        {"name":"damage","image":"heart.ico","max":3}],
+    15:[{"name":"db jump", "image":"dbjump.ico","max":2}],
+    0:[
+        {"name":"pulse","image":"pulse.ico","max":1},
+        {"name":"db jump", "image":"dbjump.ico","max":2},
+        {"name":"damage","image":"heart.ico","max":3}]
   };
-  powerupRepeat = 10;
+  powerupRepeat = 20;
   playerPowerups = {};
 
   constructor(private router:Router) { }
@@ -54,10 +63,14 @@ export class GameWindowComponent implements OnInit {
     let pyf = pyi+this.playerPos["height"];
     let oyi = 0;
     let oyf = oyi+this.objPos["height"];
-    if(this.intersect(pxi,pxf,oxi,oxf) && this.intersect(pyi,pyf,oyi,oyf) && !this.pulse){
-      this.router.navigateByUrl("/game-over");
+    if(this.intersect(pxi,pxf,oxi,oxf) && this.intersect(pyi,pyf,oyi,oyf) && !this.pulse && !this.damage){
+      this.damage=true;
     }
     
+  }
+
+  playerDeath(){
+    this.router.navigateByUrl("/game-over");
   }
 
   intersect(n:number, m:number, a:number, b:number){
@@ -88,15 +101,18 @@ export class GameWindowComponent implements OnInit {
 
   onScoreUpdate(){
     if(this.score%this.powerupRepeat in this.powerups && this.score){
-      let pwrupName = this.powerups[this.score%this.powerupRepeat]["name"]
-      let pwrupImg = this.powerups[this.score%this.powerupRepeat]["image"]
-      let max = this.powerups[this.score%this.powerupRepeat]["max"]
-      //increment powerup if player already has it
-      if(pwrupName in this.playerPowerups && this.playerPowerups[pwrupName]["uses"] < max){
-        this.playerPowerups[pwrupName]["uses"]++;
-      }else{//add powerup if not exist
-        this.playerPowerups[pwrupName] = {"uses":1, "image":pwrupImg};
-      }
+      this.powerups[this.score%this.powerupRepeat].forEach(powerup => {
+        let pwrupName = powerup["name"]
+        let pwrupImg = powerup["image"]
+        let max = powerup["max"]
+        //increment powerup if player already has it
+        if(pwrupName in this.playerPowerups && this.playerPowerups[pwrupName]["uses"] < max){
+          this.playerPowerups[pwrupName]["uses"]++;
+        }else if(!(pwrupName in this.playerPowerups)){//add powerup if not exist
+          this.playerPowerups[pwrupName] = {"uses":1, "image":pwrupImg};
+        }
+      });
+      
     }
     
   }
@@ -114,7 +130,9 @@ export class GameWindowComponent implements OnInit {
     this.pulse = false;
   }
 
-  
+  resetDamage(){
+    this.damage = false; 
+  }
   
 
 }

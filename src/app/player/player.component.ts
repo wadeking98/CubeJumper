@@ -12,10 +12,14 @@ export class PlayerComponent implements OnInit {
   @Input() playerPowerups:Object;
   @Input() dbjump:boolean;
   @Input() pulse:boolean;
+  @Input() damage:boolean;
   @Output() pulseDone = new EventEmitter<boolean>();
   @Output() jumpDone = new EventEmitter<boolean>();
+  @Output() damageDone = new EventEmitter<boolean>();
+  @Output() playerDeath = new EventEmitter<boolean>();
   @Output() framePos = new EventEmitter<Object>();
   pulseInterval;
+  damageInterval;
   opacity = 1;
   left = 10;
   width = 10;
@@ -38,7 +42,24 @@ export class PlayerComponent implements OnInit {
     return pwrflag && pwr in this.playerPowerups && this.playerPowerups[pwr]["uses"]>0
   }
 
-  update(): void{
+  damageHandler(): void{
+    if(this.canUsePowerup("damage",this.damage)){
+      this.damageInterval = setInterval(()=>{this.opacity = this.opacity === 1? 0:1},150)
+      this.playerPowerups["damage"]["uses"] --;
+      this.damage = false
+      setTimeout(() => { 
+        clearInterval(this.damageInterval);
+        this.opacity = 1;
+        this.damageDone.emit(true);
+      }, 500);
+    }else if(this.damage){
+      this.damage = false;
+      this.damageDone.emit(true);
+      this.playerDeath.emit(true);
+    }
+  }
+
+  pulseHandler(): void{
     if(this.canUsePowerup("pulse",this.pulse)){
       this.pulseInterval = setInterval(()=>{this.opacity = this.opacity === 1? 0:1},150)
       this.playerPowerups["pulse"]["uses"] --;
@@ -49,6 +70,9 @@ export class PlayerComponent implements OnInit {
         this.pulseDone.emit(true);
       }, 5000);
     }
+  }
+
+  jumpHandler(): void{
     if(this.jump){
       if(this.pos === 0 && this.timer === 0){//start of jump
         this.vel=this.velinit;
@@ -79,6 +103,13 @@ export class PlayerComponent implements OnInit {
         this.vel = 0;
       }
     }
+  
+  }
+
+  update(): void{
+    this.jumpHandler();
+    this.pulseHandler();
+    this.damageHandler();
   }
 
   

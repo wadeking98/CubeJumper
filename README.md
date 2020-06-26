@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.8.
 
+## Controls
+
+Side scroller consists of 3 powerups: double jump, pulse, extra life. To use double jump simply hit space bar again while airborne. To use pulse press "Z" on your keyboard. An extra life gets used each time you hit an obstacle, if you run out of lives the game ends.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

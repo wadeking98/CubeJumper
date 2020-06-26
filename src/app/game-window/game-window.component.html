@@ -12,10 +12,13 @@
     [(jump)]="jump" 
     [(dbjump)]="dbjump" 
     [(pulse)]="pulse" 
+    [(damage)]="damage"
     [(playerPowerups)]="playerPowerups" 
     (jumpDone)="resetJump()" 
     (framePos)="getPlayerPos($event)"
     (pulseDone)="resetPulse()"
+    (damageDone)="resetDamage()"
+    (playerDeath)="playerDeath()"
     ></app-player>
 <app-obstacle fps="120" (framePos)="getObjPos($event)"></app-obstacle>
 
